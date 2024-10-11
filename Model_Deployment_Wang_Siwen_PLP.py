@@ -22,7 +22,6 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('opinion_lexicon')
 
-# Create a directory to save the model files
 model_directory = "finetuned_bert_twitter"
 os.makedirs(model_directory, exist_ok=True)
 
@@ -34,53 +33,25 @@ files_to_download = {
     "special_tokens_map.json": "196GwvOcgDgK2b_8e91krExWz76LTR4nK"
 }
 
-# Download each file to the model directory
 for file_name, file_id in files_to_download.items():
     output = os.path.join(model_directory, file_name)
     gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
 
-# Check if all files were successfully downloaded
 all_files_downloaded = all(os.path.exists(os.path.join(model_directory, file)) for file in files_to_download)
 if all_files_downloaded:
     st.success("All model files downloaded successfully!")
 else:
     st.error("Some files failed to download. Please check the file IDs.")
 
-# Load the TensorFlow model
+# 加载 TensorFlow 模型
+model_path = os.path.join(model_directory, "tf_model.h5")
 try:
-    # 尝试加载 TensorFlow 模型
-    model_path = os.path.join(model_directory, "tf_model.h5")
     model = tf.keras.models.load_model(model_path)
     st.success("Model loaded successfully!")
 except Exception as e:
     st.error(f"Error loading the model: {e}")
 
-def load_emoji_sentiment_mapping():
-    # Correct GitHub raw URL for the CSV file
-    csv_url = "https://raw.githubusercontent.com/WinnerWSW/WangSiwen_PLP_Project/master/Emoji_Sentiment_Data_v1.0.csv"
-    
-    try:
-        emoji_df = pd.read_csv(csv_url)
-        emoji_sentiment_mapping = {}
-        for _, row in emoji_df.iterrows():
-            emoji_char = row['Emoji']
-            positive_score = row['Positive']
-            negative_score = row['Negative']
-            neutral_score = row['Neutral']
-
-            if positive_score > negative_score and positive_score > neutral_score:
-                emoji_sentiment_mapping[emoji_char] = 'positive'
-            elif negative_score > positive_score and negative_score > neutral_score:
-                emoji_sentiment_mapping[emoji_char] = 'negative'
-            else:
-                emoji_sentiment_mapping[emoji_char] = 'neutral'
-        return emoji_sentiment_mapping
-    except Exception as e:
-        st.error(f"Error loading emoji sentiment data: {e}")
-        return {}
-
-model_files = os.listdir(model_directory)
-print("Model directory files:", model_files)
+tokenizer = BertTokenizer.from_pretrained(model_directory)
 
 # Ensure that the emoji_sentiment_mapping is initialized before use
 emoji_sentiment_mapping = load_emoji_sentiment_mapping()
