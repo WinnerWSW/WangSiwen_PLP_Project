@@ -15,18 +15,43 @@ import streamlit as st
 from math import pi
 import gdown
 from transformers import pipeline
+import os
 
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('opinion_lexicon')
 
-file_id = "13Xe_TiDmkjpFof2AO9rDTzwtdpTKFO-m"
-output = "finetuned_bert_twitter"
-
-gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
-
+# Create a directory to save the model files
 model_directory = "finetuned_bert_twitter"
-absa = pipeline("sentiment-analysis", model=model_directory, tokenizer=model_directory)
+os.makedirs(model_directory, exist_ok=True)
+
+# Define the files to download and their Google Drive file IDs
+files_to_download = {
+    "tf_model.h5": "13Xe_TiDmkjpFof2AO9rDTzwtdpTKFO-m",
+    "vocab.txt": "1ruQPJSyCbuECkNZ8y0i8keELBsNjd6mF",
+    "config.json": "1nPth_UtG18YGMKX_4MAxCJ5IrsHpIeZ6",
+    "tokenizer_config.json": "1WQ5mbmlMPYTQLbh8F5jm-Jg9crDLHMt2",
+    "special_tokens_map.json": "196GwvOcgDgK2b_8e91krExWz76LTR4nK"
+}
+
+# Download each file to the model directory
+for file_name, file_id in files_to_download.items():
+    output = os.path.join(model_directory, file_name)
+    gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
+
+# Check if all files were successfully downloaded
+all_files_downloaded = all(os.path.exists(os.path.join(model_directory, file)) for file in files_to_download)
+if all_files_downloaded:
+    print("All model files downloaded successfully!")
+else:
+    print("Some files failed to download. Please check the file IDs.")
+
+# Load the Hugging Face model
+try:
+    absa = pipeline("sentiment-analysis", model=model_directory, tokenizer=model_directory)
+    print("Model loaded successfully!")
+except Exception as e:
+    print(f"Error loading the model: {e}")
 
 def load_emoji_sentiment_mapping(csv_file):
     emoji_df = pd.read_csv(csv_file)
