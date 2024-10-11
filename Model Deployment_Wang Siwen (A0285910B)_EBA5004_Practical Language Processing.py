@@ -13,12 +13,19 @@ from transformers import pipeline
 import matplotlib.pyplot as plt
 import streamlit as st
 from math import pi
+import gdown
+from transformers import pipeline
 
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('opinion_lexicon')
 
-model_directory = "C:\\Users\\LEGION\\Desktop\\finetuned_bert_twitter"
+file_id = "13Xe_TiDmkjpFof2AO9rDTzwtdpTKFO-m"
+output = "finetuned_bert_twitter"
+
+gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
+
+model_directory = "finetuned_bert_twitter"
 absa = pipeline("sentiment-analysis", model=model_directory, tokenizer=model_directory)
 
 def load_emoji_sentiment_mapping(csv_file):
