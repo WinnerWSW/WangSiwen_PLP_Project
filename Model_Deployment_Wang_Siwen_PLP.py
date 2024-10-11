@@ -54,23 +54,34 @@ except Exception as e:
     print(f"Error loading the model: {e}")
 
 def load_emoji_sentiment_mapping():
-    # Replace with your actual GitHub raw URL
+    # Correct GitHub raw URL for the CSV file
     csv_url = "https://raw.githubusercontent.com/WinnerWSW/WangSiwen_PLP_Project/master/Emoji_Sentiment_Data_v1.0.csv"
-    emoji_df = pd.read_csv(csv_url)
-    emoji_sentiment_mapping = {}
-    for _, row in emoji_df.iterrows():
-        emoji_char = row['Emoji']
-        positive_score = row['Positive']
-        negative_score = row['Negative']
-        neutral_score = row['Neutral']
+    
+    try:
+        emoji_df = pd.read_csv(csv_url)
+        emoji_sentiment_mapping = {}
+        for _, row in emoji_df.iterrows():
+            emoji_char = row['Emoji']
+            positive_score = row['Positive']
+            negative_score = row['Negative']
+            neutral_score = row['Neutral']
 
-        if positive_score > negative_score and positive_score > neutral_score:
-            emoji_sentiment_mapping[emoji_char] = 'positive'
-        elif negative_score > positive_score and negative_score > neutral_score:
-            emoji_sentiment_mapping[emoji_char] = 'negative'
-        else:
-            emoji_sentiment_mapping[emoji_char] = 'neutral'
-    return emoji_sentiment_mapping
+            if positive_score > negative_score and positive_score > neutral_score:
+                emoji_sentiment_mapping[emoji_char] = 'positive'
+            elif negative_score > positive_score and negative_score > neutral_score:
+                emoji_sentiment_mapping[emoji_char] = 'negative'
+            else:
+                emoji_sentiment_mapping[emoji_char] = 'neutral'
+        return emoji_sentiment_mapping
+    except Exception as e:
+        st.error(f"Error loading emoji sentiment data: {e}")
+        return {}
+
+# Ensure that the emoji_sentiment_mapping is initialized before use
+emoji_sentiment_mapping = load_emoji_sentiment_mapping()
+
+if not emoji_sentiment_mapping:
+    st.error("Failed to load emoji sentiment data.")
 
 def sentiment_analysis_with_emoji(comment):
     max_length = 512
