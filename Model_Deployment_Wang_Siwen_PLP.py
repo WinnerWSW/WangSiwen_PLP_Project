@@ -480,7 +480,7 @@ if video_url:
 
                 fig, ax = plt.subplots(figsize=(8, 8))
                 ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=140)
-                ax.axis('equal')  # 保持饼图为圆形
+                ax.axis('equal')
                 plt.title("Aspect Sentiment Distribution", fontsize=16)
 
                 st.pyplot(fig)
