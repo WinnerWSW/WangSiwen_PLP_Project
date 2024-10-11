@@ -17,6 +17,8 @@ import gdown
 from transformers import pipeline
 import os
 import tensorflow as tf 
+from tensorflow.keras.models import model_from_json
+from transformers import BertTokenizer, TFAutoModel
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -42,9 +44,8 @@ if all(os.path.exists(os.path.join(model_directory, file)) for file in files_to_
 else:
     st.error("Some files failed to download. Please check the file IDs.")
 
-model_path = os.path.join(model_directory, "tf_model.h5")
 try:
-    model = tf.keras.models.load_model(model_path)
+    model = TFAutoModel.from_pretrained(model_directory) 
     st.success("Model loaded successfully!")
 except Exception as e:
     st.error(f"Error loading the model: {e}")
