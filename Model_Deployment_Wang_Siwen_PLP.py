@@ -52,6 +52,14 @@ try:
     print("Model loaded successfully!")
 except Exception as e:
     print(f"Error loading the model: {e}")
+    absa = None  # Set absa to None if it fails to load
+
+# Check if absa is None before using it
+if absa is None:
+    st.error("Model loading failed. Please check the model directory and files.")
+else:
+    # Proceed with sentiment analysis
+    sentiment_result = absa(comment)[0]
 
 def load_emoji_sentiment_mapping():
     # Correct GitHub raw URL for the CSV file
@@ -283,9 +291,7 @@ if video_url:
                     r"least \w+",
                     r"few \w+",
                 ]
-
                 combined_pattern = "|".join(negation_patterns)
-
                 matches = re.findall(combined_pattern, comment)
 
                 return matches
