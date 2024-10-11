@@ -16,6 +16,7 @@ from math import pi
 import gdown
 from transformers import pipeline
 import os
+import tensorflow as tf 
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -25,7 +26,6 @@ nltk.download('opinion_lexicon')
 model_directory = "finetuned_bert_twitter"
 os.makedirs(model_directory, exist_ok=True)
 
-# Define the files to download and their Google Drive file IDs
 files_to_download = {
     "tf_model.h5": "13Xe_TiDmkjpFof2AO9rDTzwtdpTKFO-m",
     "vocab.txt": "1ruQPJSyCbuECkNZ8y0i8keELBsNjd6mF",
@@ -42,24 +42,18 @@ for file_name, file_id in files_to_download.items():
 # Check if all files were successfully downloaded
 all_files_downloaded = all(os.path.exists(os.path.join(model_directory, file)) for file in files_to_download)
 if all_files_downloaded:
-    print("All model files downloaded successfully!")
+    st.success("All model files downloaded successfully!")
 else:
-    print("Some files failed to download. Please check the file IDs.")
+    st.error("Some files failed to download. Please check the file IDs.")
 
-# Load the Hugging Face model
+# Load the TensorFlow model
 try:
-    absa = pipeline("sentiment-analysis", model=model_directory, tokenizer=model_directory)
-    print("Model loaded successfully!")
+    # 尝试加载 TensorFlow 模型
+    model_path = os.path.join(model_directory, "tf_model.h5")
+    model = tf.keras.models.load_model(model_path)
+    st.success("Model loaded successfully!")
 except Exception as e:
-    print(f"Error loading the model: {e}")
-    absa = None  # Set absa to None if it fails to load
-
-# Check if absa is None before using it
-if absa is None:
-    st.error("Model loading failed. Please check the model directory and files.")
-else:
-    # Proceed with sentiment analysis
-    sentiment_result = absa(comment)[0]
+    st.error(f"Error loading the model: {e}")
 
 def load_emoji_sentiment_mapping():
     # Correct GitHub raw URL for the CSV file
