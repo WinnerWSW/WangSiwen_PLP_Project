@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+nltk
+wordcloud
+emoji
+squarify
+transformers
+matplotlib
+google-api-python-client
