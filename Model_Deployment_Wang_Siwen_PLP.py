@@ -53,8 +53,10 @@ try:
 except Exception as e:
     print(f"Error loading the model: {e}")
 
-def load_emoji_sentiment_mapping(csv_file):
-    emoji_df = pd.read_csv(csv_file)
+def load_emoji_sentiment_mapping():
+    # Replace with your actual GitHub raw URL
+    csv_url = "https://raw.githubusercontent.com/WinnerWSW/WangSiwen_PLP_Project/master/Emoji_Sentiment_Data_v1.0.csv"
+    emoji_df = pd.read_csv(csv_url)
     emoji_sentiment_mapping = {}
     for _, row in emoji_df.iterrows():
         emoji_char = row['Emoji']
@@ -64,7 +66,7 @@ def load_emoji_sentiment_mapping(csv_file):
 
         if positive_score > negative_score and positive_score > neutral_score:
             emoji_sentiment_mapping[emoji_char] = 'positive'
-        elif negative_score > positive_score and negative_score:
+        elif negative_score > positive_score and negative_score > neutral_score:
             emoji_sentiment_mapping[emoji_char] = 'negative'
         else:
             emoji_sentiment_mapping[emoji_char] = 'neutral'
@@ -112,13 +114,7 @@ def detect_emoji_sentiment(comment):
 
 st.title("YouTube Comment Sentiment Analysis")
 
-uploaded_file = st.file_uploader("Upload the Emoji Sentiment Data CSV", type="csv")
-
-if uploaded_file:
-    emoji_sentiment_mapping = load_emoji_sentiment_mapping(uploaded_file)
-    st.success("Emoji sentiment data loaded successfully!")
-else:
-    st.warning("Please upload the Emoji Sentiment Data CSV to continue.")
+st.success("Emoji sentiment data loaded successfully!")
 
 @st.cache_resource
 def get_youtube_client(api_key):
