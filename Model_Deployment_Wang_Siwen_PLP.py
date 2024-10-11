@@ -37,19 +37,23 @@ for file_name, file_id in files_to_download.items():
     output = os.path.join(model_directory, file_name)
     gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
 
-all_files_downloaded = all(os.path.exists(os.path.join(model_directory, file)) for file in files_to_download)
-if all_files_downloaded:
+if all(os.path.exists(os.path.join(model_directory, file)) for file in files_to_download):
     st.success("All model files downloaded successfully!")
 else:
     st.error("Some files failed to download. Please check the file IDs.")
 
-# 加载 TensorFlow 模型
 model_path = os.path.join(model_directory, "tf_model.h5")
 try:
     model = tf.keras.models.load_model(model_path)
     st.success("Model loaded successfully!")
 except Exception as e:
     st.error(f"Error loading the model: {e}")
+
+try:
+    tokenizer = BertTokenizer.from_pretrained(model_directory)
+    st.success("Tokenizer loaded successfully!")
+except Exception as e:
+    st.error(f"Error loading the tokenizer: {e}")
 
 tokenizer = BertTokenizer.from_pretrained(model_directory)
 
