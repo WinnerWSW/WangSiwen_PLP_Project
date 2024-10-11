@@ -8,5 +8,5 @@ squarify
 transformers
 matplotlib
 google-api-python-client
-import gdown
-from transformers import pipeline
+gdown
+transformers
