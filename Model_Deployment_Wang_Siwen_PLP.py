@@ -85,6 +85,9 @@ def load_emoji_sentiment_mapping():
         st.error(f"Error loading emoji sentiment data: {e}")
         return {}
 
+model_files = os.listdir(model_directory)
+print("Model directory files:", model_files)
+
 # Ensure that the emoji_sentiment_mapping is initialized before use
 emoji_sentiment_mapping = load_emoji_sentiment_mapping()
 
