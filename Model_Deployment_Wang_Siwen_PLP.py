@@ -16,6 +16,8 @@ from math import pi
 import gdown
 import tensorflow as tf
 from transformers import TFBertForSequenceClassification, BertTokenizer
+import logging
+logging.basicConfig(level=logging.ERROR)
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -46,7 +48,7 @@ try:
     st.success("Model loaded successfully!")
 except Exception as e:
     st.error(f"Error loading the model: {e}")
-
+    st.stop() 
 try:
     tokenizer = BertTokenizer.from_pretrained('./finetuned_bert_twitter')
     st.success("Tokenizer loaded successfully!")
@@ -56,8 +58,7 @@ except Exception as e:
 def load_emoji_sentiment_mapping():
     try:
         csv_url = "https://raw.githubusercontent.com/WinnerWSW/WangSiwen_PLP_Project/master/Emoji_Sentiment_Data_v1.0.csv"
-        emoji_df = pd.read_csv(csv_url)
-        
+        emoji_df = pd.read_csv(csv_url)        
         emoji_sentiment_mapping = {}
         for _, row in emoji_df.iterrows():
             emoji_char = row['Emoji']
@@ -122,7 +123,6 @@ def detect_emoji_sentiment(comment):
     return None
 
 st.title("YouTube Comment Sentiment Analysis")
-
 st.success("Emoji sentiment data loaded successfully!")
 
 @st.cache_resource
