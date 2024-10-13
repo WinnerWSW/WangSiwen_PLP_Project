@@ -2,7 +2,6 @@ pip==24.2
 streamlit
 tensorflow
 keras
-transformers==4.30.0
 numpy
 pandas
 nltk
@@ -13,4 +12,6 @@ emoji
 squarify
 gdown
 google-api-python-client
-tokenizers==0.13.3 --prefer-binary
+transformers==4.30.0
+tokenizers==0.13.3
+
