@@ -16,7 +16,6 @@ from math import pi
 import gdown
 import tensorflow as tf
 from transformers import TFBertForSequenceClassification, BertTokenizer
-import h5py
 
 nltk.download('punkt')
 nltk.download('stopwords')
