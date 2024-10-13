@@ -44,8 +44,9 @@ if all(os.path.exists(os.path.join(model_directory, file)) for file in files_to_
 else:
     st.error("Some files failed to download. Please check the file IDs.")
 
+model_path = os.path.join(model_directory, "tf_model.h5")
 try:
-    model = TFAutoModel.from_pretrained(model_directory)
+    model = load_model(model_path)  
     st.success("Model loaded successfully!")
 except Exception as e:
     st.error(f"Error loading the model: {e}")
