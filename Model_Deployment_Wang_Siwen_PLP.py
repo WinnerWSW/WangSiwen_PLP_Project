@@ -15,15 +15,14 @@ import streamlit as st
 from math import pi
 import gdown
 import tensorflow as tf
-from tensorflow.keras.models import load_model, model_from_json
-from transformers import BertTokenizer
+from transformers import TFBertForSequenceClassification, BertTokenizer
 import h5py
 
 nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('opinion_lexicon')
 
-os.system("pip install tensorflow==2.11 tf-keras==2.11")
+os.system("pip install tensorflow==2.17.0")
 
 model_directory = "finetuned_bert_twitter"
 os.makedirs(model_directory, exist_ok=True)
@@ -45,16 +44,8 @@ if all(os.path.exists(os.path.join(model_directory, file)) for file in files_to_
 else:
     st.error("Some files failed to download. Please check the file IDs.")
 
-model_path = os.path.join(model_directory, "tf_model.h5")
-
-with h5py.File(model_path, 'r') as f:
-    if 'model_config' in f.attrs:
-        print("模型包含完整的结构信息")
-    else:
-        print("模型缺少结构信息，仅包含权重")
-
 try:
-    model = load_model(model_path)  
+    model = TFBertForSequenceClassification.from_pretrained(model_directory, from_tf=True)
     st.success("Model loaded successfully!")
 except Exception as e:
     st.error(f"Error loading the model: {e}")
