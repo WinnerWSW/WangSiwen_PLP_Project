@@ -46,13 +46,13 @@ else:
     st.error("Some files failed to download. Please check the file IDs.")
 
 try:
-    model = TFBertForSequenceClassification.from_pretrained(model_directory, from_tf=True)
+    model = TFBertForSequenceClassification.from_pretrained('./finetuned_bert_twitter', from_tf=True)
     st.success("Model loaded successfully!")
 except Exception as e:
     st.error(f"Error loading the model: {e}")
 
 try:
-    tokenizer = BertTokenizer.from_pretrained(model_directory)
+    tokenizer = BertTokenizer.from_pretrained('./finetuned_bert_twitter')
     st.success("Tokenizer loaded successfully!")
 except Exception as e:
     st.error(f"Error loading the tokenizer: {e}")
