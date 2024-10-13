@@ -17,6 +17,7 @@ import gdown
 import tensorflow as tf
 from tensorflow.keras.models import load_model, model_from_json
 from transformers import BertTokenizer
+import h5py
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -45,6 +46,13 @@ else:
     st.error("Some files failed to download. Please check the file IDs.")
 
 model_path = os.path.join(model_directory, "tf_model.h5")
+
+with h5py.File(model_path, 'r') as f:
+    if 'model_config' in f.attrs:
+        print("模型包含完整的结构信息")
+    else:
+        print("模型缺少结构信息，仅包含权重")
+
 try:
     model = load_model(model_path)  
     st.success("Model loaded successfully!")
