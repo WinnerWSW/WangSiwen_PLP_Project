@@ -24,7 +24,7 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('opinion_lexicon')
 
-os.system("pip install tf-keras")
+os.system("pip install tensorflow==2.11 tf-keras==2.11")
 
 model_directory = "finetuned_bert_twitter"
 os.makedirs(model_directory, exist_ok=True)
