@@ -24,6 +24,8 @@ nltk.download('punkt')
 nltk.download('stopwords')
 nltk.download('opinion_lexicon')
 
+os.system("pip install tf-keras")
+
 model_directory = "finetuned_bert_twitter"
 os.makedirs(model_directory, exist_ok=True)
 
@@ -45,7 +47,7 @@ else:
     st.error("Some files failed to download. Please check the file IDs.")
 
 try:
-    model = TFAutoModel.from_pretrained(model_directory) 
+    model = TFAutoModel.from_pretrained(model_directory)  # 尝试从下载的目录中加载模型
     st.success("Model loaded successfully!")
 except Exception as e:
     st.error(f"Error loading the model: {e}")
@@ -56,14 +58,34 @@ try:
 except Exception as e:
     st.error(f"Error loading the tokenizer: {e}")
 
-tokenizer = BertTokenizer.from_pretrained(model_directory)
+def load_emoji_sentiment_mapping():
+    try:
+        csv_url = "https://raw.githubusercontent.com/WinnerWSW/WangSiwen_PLP_Project/master/Emoji_Sentiment_Data_v1.0.csv"
+        emoji_df = pd.read_csv(csv_url)
+        
+        emoji_sentiment_mapping = {}
+        for _, row in emoji_df.iterrows():
+            emoji_char = row['Emoji']
+            positive_score = row['Positive']
+            negative_score = row['Negative']
+            neutral_score = row['Neutral']
 
-# Ensure that the emoji_sentiment_mapping is initialized before use
+            if positive_score > negative_score and positive_score > neutral_score:
+                emoji_sentiment_mapping[emoji_char] = 'positive'
+            elif negative_score > positive_score and negative_score > neutral_score:
+                emoji_sentiment_mapping[emoji_char] = 'negative'
+            else:
+                emoji_sentiment_mapping[emoji_char] = 'neutral'
+        return emoji_sentiment_mapping
+    except Exception as e:
+        st.error(f"Error loading emoji sentiment data: {e}")
+        return {}
+
 emoji_sentiment_mapping = load_emoji_sentiment_mapping()
 
 if not emoji_sentiment_mapping:
     st.error("Failed to load emoji sentiment data.")
-
+    
 def sentiment_analysis_with_emoji(comment):
     max_length = 512
     label_mapping = {
