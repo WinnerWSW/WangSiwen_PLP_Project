@@ -23,6 +23,7 @@ nltk.download('stopwords')
 nltk.download('opinion_lexicon')
 
 os.system("pip install tensorflow==2.17.0")
+os.system('pip install transformers==4.45.2')
 
 model_directory = "finetuned_bert_twitter"
 os.makedirs(model_directory, exist_ok=True)
