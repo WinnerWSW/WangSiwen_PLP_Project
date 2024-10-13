@@ -1,4 +1,5 @@
 import re
+import os
 import pandas as pd
 import numpy as np
 import nltk
@@ -9,16 +10,13 @@ from wordcloud import WordCloud
 from collections import Counter
 import emoji
 import squarify
-from transformers import pipeline
 import matplotlib.pyplot as plt
 import streamlit as st
 from math import pi
 import gdown
-from transformers import pipeline
-import os
-import tensorflow as tf 
-from tensorflow.keras.models import model_from_json
-from transformers import BertTokenizer, TFAutoModel
+import tensorflow as tf
+from tensorflow.keras.models import load_model, model_from_json
+from transformers import BertTokenizer
 
 nltk.download('punkt')
 nltk.download('stopwords')
@@ -47,7 +45,7 @@ else:
     st.error("Some files failed to download. Please check the file IDs.")
 
 try:
-    model = TFAutoModel.from_pretrained(model_directory)  # 尝试从下载的目录中加载模型
+    model = TFAutoModel.from_pretrained(model_directory)
     st.success("Model loaded successfully!")
 except Exception as e:
     st.error(f"Error loading the model: {e}")
